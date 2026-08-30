@@ -12,10 +12,7 @@ import {
   Check,
   CheckCircle2,
   CircleHelp,
-  Clock3,
-  FolderCheck,
   GraduationCap,
-  HardDriveUpload,
   Lightbulb,
   MapPin,
   PartyPopper,
@@ -182,7 +179,7 @@ const faq = [
   {
     category: 'Тема',
     question: 'Как выбрать тему?',
-    answer: 'Откройте файл «Предметные области» и выберите тему из списка по своему порядковому номеру группы. На её основе сформулируйте объект, цель и практическую задачу. Тему дипломного проекта тоже можно использовать, если она подходит к заданию.',
+    answer: 'Откройте файл «Предметные области» и выберите тему из списка по своему порядковому номеру группы. На её основе сформулируйте объект, цель и практическую задачу. Если тема непонятна, согласуйте формулировку с руководителем практики.',
   },
   {
     category: 'Тема',
@@ -447,7 +444,7 @@ export default function Home() {
 
       <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-          <div><Badge variant="outline" className="border-black/15 bg-white text-black">Маршрут на неделю</Badge><h2 className="mt-4 text-4xl font-extrabold tracking-[-0.05em] sm:text-5xl">Что делать и когда</h2></div>
+          <div><Badge variant="outline" className="border-black/15 bg-white text-black">Маршрут на практику</Badge><h2 className="mt-4 text-4xl font-extrabold tracking-[-0.05em] sm:text-5xl">Что делать и когда</h2></div>
           <p className="max-w-md text-sm leading-relaxed text-black/55">Не пытайтесь сделать всё в последний день. Сначала собирайте факты, потом оформляйте.</p>
         </div>
         <div className="mt-8 grid overflow-hidden rounded-[28px] border border-black/10 bg-white md:grid-cols-4">
@@ -534,7 +531,6 @@ export default function Home() {
       <footer className="border-t border-black/10 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-7 text-sm text-black/55 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <p className="font-semibold">Эта информация — памятка, подготовленная для вас с любовью ♥</p>
-          <div className="flex flex-wrap gap-x-5 gap-y-2"><span className="inline-flex items-center gap-1.5"><Clock3 className="size-4" /> дедлайн без времени</span><span className="inline-flex items-center gap-1.5"><HardDriveUpload className="size-4" /> статический сайт</span><span className="inline-flex items-center gap-1.5"><FolderCheck className="size-4" /> 4 или 5 файлов</span></div>
         </div>
       </footer>
     </main>
