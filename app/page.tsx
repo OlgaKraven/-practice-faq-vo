@@ -524,7 +524,7 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="grid gap-5 rounded-[30px] bg-primary p-6 text-black sm:grid-cols-[1fr_auto] sm:items-center sm:p-9">
           <div><div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-[0.13em]"><Lightbulb className="size-5" /> Главное правило</div><h2 className="mt-3 max-w-3xl text-3xl font-extrabold leading-tight tracking-[-0.04em] sm:text-4xl">Если LMS или руководитель дали новое прямое указание — оно важнее этой памятки.</h2><p className="mt-3 max-w-3xl font-semibold">Памятка собрана по комплекту практики и помогает не потеряться, но не меняет официальные требования.</p></div>
-          <a href="#top" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-black px-5 text-sm font-bold text-white hover:bg-black/80">Наверх <Upload className="size-4 rotate-180" /></a>
+          <a href="#top" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-black px-5 text-sm font-bold text-white hover:bg-black/80">Наверх <Upload className="size-4" /></a>
         </div>
       </section>
 
