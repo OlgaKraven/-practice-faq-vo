@@ -518,7 +518,7 @@ export default function Home() {
             <div className="rounded-2xl bg-white p-4 text-black shadow-sm">
               <CalendarDays className="mb-5 size-6 text-primary" />
               <p className="text-sm font-semibold text-black/60">Срок</p>
-              <p className="mt-1 text-xl font-extrabold">Смотрите в LMS</p>
+              <p className="mt-1 text-xl font-extrabold">Срок сдачи — последний день практики</p>
             </div>
           </div>
         </div>
