@@ -215,7 +215,17 @@ const faq = [
   {
     category: 'Сроки',
     question: 'Когда загружать комплект?',
-    answer: 'Ориентируйтесь на дату и время в вашем задании LMS. В материалах практики указано прикрепить отчётность не позднее следующего дня после окончания, но прямое указание в LMS имеет приоритет.',
+    answer: 'Ориентируйтесь на дату и время в вашем задании LMS. Срок практики также можно уточнить в описании практики в LMS и в сообщении на студенческой почте.',
+  },
+  {
+    category: 'Место практики',
+    question: 'Как узнать, где я прохожу практику?',
+    answer: 'Проверьте сообщение на студенческой почте: там указано место прохождения или дальнейшие инструкции. Если письма нет во входящих, обязательно посмотрите папку «Спам» и поиск по почте.',
+  },
+  {
+    category: 'Сроки',
+    question: 'Где посмотреть срок практики?',
+    answer: 'Откройте описание практики в LMS и найдите письмо на студенческой почте. Сверьте дату начала и окончания в обоих источниках; если данные различаются, уточните актуальный срок у руководителя или куратора.',
   },
   {
     category: 'Сдача',
@@ -225,7 +235,7 @@ const faq = [
   {
     category: 'Форматы',
     question: 'В каких форматах сдавать файлы?',
-    answer: 'Индивидуальное задание и отчёт — PDF. Аттестационный лист — DOCX (Word). Справка — PDF. Для веток НИР дополнительное приложение обычно хранится как DOCX, если в комплекте не указан другой формат. Договор загружается как PDF, если LMS просит его скан.',
+    answer: 'Индивидуальное задание и отчёт — PDF. Аттестационный лист — DOCX (Word). Справка — PDF. Для учебной и производственной НИР дополнительное приложение обычно хранится как DOCX, если в комплекте не указан другой формат. Договор загружается как PDF, если LMS просит его скан.',
   },
   {
     category: 'Договор',
@@ -251,6 +261,11 @@ const faq = [
     category: 'Подписи',
     question: 'Где нужны подписи и печати?',
     answer: 'В индивидуальном задании и отчёте подпись обучающегося ставится там, где это предусмотрено шаблоном. В аттестационном листе оценочную часть заполняет руководитель. В справке и договоре нужна подпись ответственного лица организации; печать — при наличии.',
+  },
+  {
+    category: 'Подписи',
+    question: 'Как сделать подпись и добавить её в документ?',
+    answer: 'Подпишите чистый белый лист синей ручкой и сфотографируйте подпись при ровном свете без тени. В Word выберите «Вставка → Рисунки», добавьте фото, обрежьте лишнее и разместите подпись в нужном поле. При необходимости в «Формат рисунка» осветлите изображение или удалите фон. После сохранения откройте PDF и проверьте, что подпись читается.',
   },
   {
     category: 'Аттестация',
@@ -631,7 +646,7 @@ export default function Home() {
           <fieldset className="mx-auto mt-4 max-w-2xl">
             <legend className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-black/45">Показать вопросы по типу</legend>
             <div className="flex gap-2 overflow-x-auto pb-1">
-              {faqFilters.map((filter) => <Button key={filter.id} type="button" size="sm" variant={faqFilter === filter.id ? 'default' : 'outline'} className="shrink-0 rounded-full border-black/15 bg-white text-xs" onClick={() => setFaqFilter(filter.id)}>{filter.label}</Button>)}
+              {faqFilters.map((filter) => <Button key={filter.id} type="button" size="sm" variant="outline" className={`shrink-0 rounded-full text-xs ${faqFilter === filter.id ? 'border-black bg-black text-white hover:bg-black/85 hover:text-white' : 'border-black/30 bg-white text-black hover:border-black hover:bg-black hover:text-white'}`} onClick={() => setFaqFilter(filter.id)}>{filter.label}</Button>)}
             </div>
           </fieldset>
           <div className="mt-7 rounded-[26px] border border-black/10 bg-white px-5 sm:px-7">
