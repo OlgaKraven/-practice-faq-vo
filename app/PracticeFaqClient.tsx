@@ -38,6 +38,7 @@ type EducationLevel = 'bachelor' | 'master';
 type PracticeKind = 'study' | 'production';
 type Placement = 'university' | 'organization';
 type TrackId = 'bachelor-study' | 'bachelor-production' | 'master-study-research' | 'master-production-research';
+type FaqFilter = 'all' | 'bachelor' | 'master' | 'study' | 'production' | 'research';
 
 type DocumentItem = {
   id: string;
@@ -161,7 +162,7 @@ const tracks: Track[] = [
 ];
 
 const timeline = [
-  { date: 'До старта', title: 'Определиться', text: 'Выберите уровень, ветку практики и место прохождения. Проверьте сроки договора, если нужна профильная организация.' },
+  { date: 'До старта', title: 'Определиться', text: 'Выберите уровень, вид практики и место прохождения. Проверьте сроки договора, если нужна профильная организация.' },
   { date: 'В ходе практики', title: 'Собрать материал', text: 'Изучите задание, ведите рабочие заметки, сохраняйте источники и обсуждайте вопросы с руководителем.' },
   { date: 'Перед финишем', title: 'Оформить', text: 'Ответьте на кейсы, заполните шаблоны, проверьте ФИО, даты, подписи и формат каждого файла.' },
   { date: 'После окончания', title: 'Загрузить', text: 'Прикрепите комплект в поле «Ответ» в LMS не позднее срока, который указан в вашем задании.' },
@@ -187,7 +188,7 @@ const finalChecks = [
   'PDF и DOCX открываются после скачивания или экспорта.',
   'Подписи видны, а печати стоят там, где их использует организация.',
   'В аттестационном листе студентом заполнена только своя часть.',
-  'В LMS прикреплены все файлы выбранной ветки, а не несколько версий одного файла.',
+  'В LMS прикреплены все файлы выбранного варианта, а не несколько версий одного файла.',
 ] as const;
 
 const scoring = [
@@ -196,11 +197,20 @@ const scoring = [
   ['40', 'Качество анализа собранных материалов'],
 ] as const;
 
+const faqFilters: { id: FaqFilter; label: string }[] = [
+  { id: 'all', label: 'Все вопросы' },
+  { id: 'bachelor', label: 'Бакалавриат' },
+  { id: 'master', label: 'Магистратура' },
+  { id: 'study', label: 'Учебная практика' },
+  { id: 'production', label: 'Производственная практика' },
+  { id: 'research', label: 'НИР' },
+];
+
 const faq = [
   {
     category: 'Разделение',
     question: 'Как устроено деление практик?',
-    answer: 'Сначала выберите уровень образования: бакалавриат или магистратура. В бакалавриате доступны учебная ознакомительная и производственная практика по профилю. В магистратуре — учебная НИР и производственная НИР. После выбора система показывает только документы вашей ветки.',
+    answer: 'Сначала выберите уровень образования: бакалавриат или магистратура. В бакалавриате доступны учебная ознакомительная и производственная практика по профилю. В магистратуре — учебная НИР и производственная НИР. После выбора система показывает только документы выбранного варианта.',
   },
   {
     category: 'Сроки',
@@ -270,9 +280,24 @@ const faq = [
   {
     category: 'Важно',
     question: 'Что делать, если LMS требует другое?',
-    answer: 'Приоритет у прямого требования LMS и руководителя практики. Эта памятка помогает выбрать ветку и проверить комплект, но не заменяет официальное задание, договорную инструкцию или сообщение куратора.',
+    answer: 'Приоритет у прямого требования LMS и руководителя практики. Эта памятка помогает выбрать вид практики и проверить комплект, но не заменяет официальное задание, договорную инструкцию или сообщение куратора.',
   },
 ] as const;
+
+function faqMatchesFilter(item: (typeof faq)[number], filter: FaqFilter) {
+  if (filter === 'all') return true;
+
+  const text = `${item.category} ${item.question} ${item.answer}`.toLocaleLowerCase('ru');
+  const keywords: Record<Exclude<FaqFilter, 'all'>, string[]> = {
+    bachelor: ['бакалавр'],
+    master: ['магистрат', 'магистрант'],
+    study: ['учебн'],
+    production: ['производствен', 'профильн'],
+    research: ['нир', 'научно-исследователь', 'исследован', 'вкр'],
+  };
+
+  return keywords[filter].some((keyword) => text.includes(keyword));
+}
 
 function getDocuments(track: Track | null, placement: Placement | null) {
   if (!track) return [];
@@ -295,6 +320,7 @@ export default function Home() {
   const [placement, setPlacement] = useState<Placement | null>(null);
   const [completedByRoute, setCompletedByRoute] = useState<Record<string, Record<string, boolean>>>({});
   const [query, setQuery] = useState('');
+  const [faqFilter, setFaqFilter] = useState<FaqFilter>('all');
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
@@ -340,9 +366,12 @@ export default function Home() {
 
   const filteredFaq = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase('ru');
-    if (!needle) return faq;
-    return faq.filter((item) => `${item.category} ${item.question} ${item.answer}`.toLocaleLowerCase('ru').includes(needle));
-  }, [query]);
+    return faq.filter((item) => {
+      const inType = faqMatchesFilter(item, faqFilter);
+      const inSearch = !needle || `${item.category} ${item.question} ${item.answer}`.toLocaleLowerCase('ru').includes(needle);
+      return inType && inSearch;
+    });
+  }, [faqFilter, query]);
 
   const reportStages = selectedTrack?.isResearch ? researchReportStages : standardReportStages;
   const reportIntro = selectedTrack?.isResearch
@@ -354,12 +383,14 @@ export default function Home() {
     setTrackId(null);
     setPlacement(null);
     setQuery('');
+    setFaqFilter('all');
   }
 
   function selectTrack(id: TrackId) {
     setTrackId(id);
     setPlacement(null);
     setQuery('');
+    setFaqFilter('all');
   }
 
   function toggleDocument(id: string, checked: boolean) {
@@ -381,37 +412,33 @@ export default function Home() {
       <header className="sticky top-0 z-50 border-b border-black/10 bg-white/95 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3.5 sm:px-8">
           <a href="#top" className="flex min-w-0 items-center gap-3 font-extrabold tracking-[-0.04em]">
-            <span aria-hidden="true" className="grid size-8 shrink-0 grid-cols-2 gap-0.5 rounded-[4px] bg-black p-1">
-              <span className="rounded-[1px] bg-[#d8f04b]" />
-              <span className="rounded-[1px] bg-white" />
-              <span className="rounded-[1px] bg-white" />
-              <span className="rounded-[1px] bg-[#ffb24a]" />
-            </span>
-            <span className="truncate">ПРАКТИКА · ВО</span>
+            <img src="/practice-logo.png" alt="Логотип" className="size-8 shrink-0 rounded-[3px] object-cover" />
+            <span className="hidden truncate sm:inline">ПРАКТИКА · ВО</span>
           </a>
-          <nav className="hidden items-center gap-5 text-sm font-semibold lg:flex" aria-label="Основная навигация">
-            <a className="hover:text-primary" href="#documents">Комплект</a>
-            <a className="hover:text-primary" href="#report">Отчёт</a>
-            <a className="hover:text-primary" href="#faq">Вопросы</a>
+          <nav className="ml-auto flex max-w-[60%] items-center gap-4 overflow-x-auto whitespace-nowrap text-xs font-bold sm:ml-0 sm:max-w-none sm:gap-5 sm:text-sm" aria-label="Основная навигация">
+            <a className="shrink-0 hover:text-primary" href="#choice">Выбор практики</a>
+            <a className="shrink-0 hover:text-primary" href="#documents">Документы</a>
+            <a className="shrink-0 hover:text-primary" href="#report">Отчёт</a>
+            <a className="shrink-0 hover:text-primary" href="#faq">ЧАВО</a>
           </nav>
-          <Badge variant="outline" className="h-7 shrink-0 border-black/15 bg-[#f3f3f5] px-3 text-black">ОБЕЗЛИЧЕННАЯ ПАМЯТКА</Badge>
+          <Badge variant="outline" className="hidden h-7 shrink-0 border-black/15 bg-[#f3f3f5] px-3 text-black md:inline-flex">ПАМЯТКА</Badge>
         </div>
       </header>
 
       <div id="top" className="scroll-mt-24" />
 
-      <section className="mx-auto grid max-w-7xl gap-6 px-5 py-7 sm:px-8 lg:grid-cols-[1.08fr_.92fr] lg:py-10">
+      <section id="choice" className="scroll-mt-24 mx-auto grid max-w-7xl gap-6 px-5 py-7 sm:px-8 lg:grid-cols-[1.08fr_.92fr] lg:py-10">
         <div className="relative overflow-hidden rounded-[30px] bg-primary p-6 text-black sm:p-9">
           <div aria-hidden="true" className="absolute -right-20 -top-24 size-72 rounded-full border-[46px] border-white/20" />
           <Badge className="relative mb-8 bg-black text-white">Навигатор по документам</Badge>
-          <p className="relative mb-3 text-sm font-extrabold uppercase tracking-[0.16em]">Высшее образование · 2 уровня · 4 ветки</p>
-          <h1 className="relative max-w-3xl text-5xl font-extrabold leading-[0.9] tracking-[-0.06em] sm:text-7xl">Практика без путаницы</h1>
+          <p className="relative mb-3 text-sm font-extrabold uppercase tracking-[0.16em]">Учебная и производственная практика</p>
+          <h1 className="relative max-w-3xl text-5xl font-extrabold leading-[0.9] tracking-[-0.06em] sm:text-7xl">Навигатор по практике</h1>
           <p className="relative mt-5 max-w-2xl text-lg font-medium leading-snug sm:text-xl">Сначала выберите уровень образования, затем вид практики. Памятка покажет состав файлов, формат и следующий шаг.</p>
           <div className="relative mt-9 grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-black/15 bg-white/22 p-4">
               <GraduationCap className="mb-5 size-6" />
-              <p className="text-sm font-semibold">Схема</p>
-              <p className="mt-1 text-xl font-extrabold">2 × 2 ветки</p>
+              <p className="text-sm font-semibold">Начало</p>
+              <p className="mt-1 text-xl font-extrabold">Уровень и вид</p>
             </div>
             <div className="rounded-2xl bg-white p-4 text-black shadow-sm">
               <CalendarDays className="mb-5 size-6 text-primary" />
@@ -419,7 +446,6 @@ export default function Home() {
               <p className="mt-1 text-xl font-extrabold">Смотрите в LMS</p>
             </div>
           </div>
-          <p className="relative mt-4 text-sm font-semibold">Все персональные данные остаются в ваших шаблонах: в памятке используются только нейтральные названия.</p>
         </div>
 
         <div className="rounded-[30px] border border-black/10 bg-white p-6 sm:p-8">
@@ -465,7 +491,7 @@ export default function Home() {
           </div>}
 
           <div className="mt-6 min-h-32 rounded-2xl bg-[#f0f1f3] p-5" aria-live="polite">
-            {!educationLevel && <div className="flex gap-3 text-sm text-black/60"><ArrowDown className="mt-0.5 size-4 shrink-0 text-primary" /><p>Выберите бакалавриат или магистратуру — покажем соответствующие две ветки.</p></div>}
+            {!educationLevel && <div className="flex gap-3 text-sm text-black/60"><ArrowDown className="mt-0.5 size-4 shrink-0 text-primary" /><p>Выберите бакалавриат или магистратуру — покажем соответствующие виды практики.</p></div>}
             {educationLevel && !selectedTrack && <div className="flex gap-3 text-sm text-black/60"><ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" /><p>Теперь выберите вид практики. У НИР будет дополнительное приложение к комплекту.</p></div>}
             {selectedTrack && <div>
               <p className="flex items-center gap-2 font-extrabold"><CheckCircle2 className="size-5 text-[#008f87]" /> {selectedTrack.title} выбрана.</p>
@@ -481,7 +507,7 @@ export default function Home() {
           <div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr]">
             <div className="lg:sticky lg:top-24 lg:self-start">
               <Badge className="bg-primary text-white">Чек-лист комплекта</Badge>
-              <h2 className="mt-5 text-4xl font-extrabold leading-[0.95] tracking-[-0.05em] sm:text-6xl">{selectedTrack ? selectedTrack.title : 'Сначала выберите ветку'}</h2>
+              <h2 className="mt-5 text-4xl font-extrabold leading-[0.95] tracking-[-0.05em] sm:text-6xl">{selectedTrack ? selectedTrack.title : 'Сначала выберите вид практики'}</h2>
               <p className="mt-5 max-w-md text-lg leading-relaxed text-white/70">{selectedTrack ? `${selectedTrack.description} Сейчас выбрано: ${placeLabel}.` : 'Здесь появятся только документы выбранной практики. Это не общий список для всех студентов.'}</p>
 
               <div className="mt-8" aria-label={`Готовность комплекта: ${progress}%`}>
@@ -522,7 +548,7 @@ export default function Home() {
                   </label>
                 );
               }) : (
-                <div className="rounded-[24px] border border-dashed border-white/20 bg-[#191919] p-8 text-white/65"><FileText className="size-8 text-primary" /><p className="mt-4 text-lg font-extrabold text-white">Документы появятся после выбора ветки</p><p className="mt-2 text-sm leading-relaxed">Выберите уровень образования и один из двух видов практики выше.</p></div>
+                <div className="rounded-[24px] border border-dashed border-white/20 bg-[#191919] p-8 text-white/65"><FileText className="size-8 text-primary" /><p className="mt-4 text-lg font-extrabold text-white">Документы появятся после выбора вида практики</p><p className="mt-2 text-sm leading-relaxed">Выберите уровень образования и один из двух видов практики выше.</p></div>
               )}
 
               {selectedTrack?.kind === 'production' && <div className="mt-3 rounded-[24px] border border-primary/50 bg-primary/12 p-5">
@@ -530,7 +556,7 @@ export default function Home() {
                   <AlertTriangle className="mt-0.5 size-6 shrink-0 text-primary" />
                   <div>
                     <h3 className="font-extrabold">Договор — отдельная подсказка</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-white/65">{placement === 'organization' ? 'Скан договора добавлен в чек-лист. Оригинал с подписями передайте в деканат не позднее чем за 30 календарных дней до старта, если такой срок указан для вашего потока.' : placement === 'university' ? 'Для практики в университете договор обычно не нужен. Если LMS показывает отдельный запрос, следуйте ему и уточните способ передачи в деканате.' : 'Выберите место практики. Для профильной организации появятся скан договора и справка, а для университета — только документы вашей ветки.'}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-white/65">{placement === 'organization' ? 'Скан договора добавлен в чек-лист. Оригинал с подписями передайте в деканат не позднее чем за 30 календарных дней до старта, если такой срок указан для вашего потока.' : placement === 'university' ? 'Для практики в университете договор обычно не нужен. Если LMS показывает отдельный запрос, следуйте ему и уточните способ передачи в деканате.' : 'Выберите место практики. Для профильной организации появятся скан договора и справка, а для университета — только документы выбранного варианта.'}</p>
                   </div>
                 </div>
               </div>}
@@ -548,7 +574,7 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
           <div><Badge variant="outline" className="border-black/15 bg-white text-black">Маршрут</Badge><h2 className="mt-4 text-4xl font-extrabold tracking-[-0.05em] sm:text-5xl">Что делать и когда</h2></div>
-          <p className="max-w-md text-sm leading-relaxed text-black/55">Сначала проверьте ветку и место практики, затем собирайте доказательства и оформляйте файлы.</p>
+          <p className="max-w-md text-sm leading-relaxed text-black/55">Сначала проверьте вид и место практики, затем собирайте доказательства и оформляйте файлы.</p>
         </div>
         <div className="mt-8 grid overflow-hidden rounded-[28px] border border-black/10 bg-white md:grid-cols-4">
           {timeline.map((item, index) => (
@@ -602,6 +628,12 @@ export default function Home() {
         <div className="mx-auto max-w-5xl px-5 sm:px-8">
           <div className="text-center"><Badge className="bg-black text-white">Частые вопросы</Badge><h2 className="mt-5 text-4xl font-extrabold tracking-[-0.05em] sm:text-6xl">Короткий ответ на сложный момент</h2><p className="mx-auto mt-4 max-w-2xl text-black/60">Ищите по словам: «бакалавриат», «НИР», «договор», «PDF», «справка», «аттестационный».</p></div>
           <div className="relative mx-auto mt-8 max-w-2xl"><Search aria-hidden="true" className="pointer-events-none absolute left-4 top-1/2 z-10 size-5 -translate-y-1/2 text-black/40" /><Input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Что непонятно?" aria-label="Поиск по частым вопросам" className="h-14 rounded-2xl border-black/15 bg-white pl-12 pr-4 text-base shadow-sm" /></div>
+          <fieldset className="mx-auto mt-4 max-w-2xl">
+            <legend className="mb-2 text-xs font-extrabold uppercase tracking-[0.12em] text-black/45">Показать вопросы по типу</legend>
+            <div className="flex gap-2 overflow-x-auto pb-1">
+              {faqFilters.map((filter) => <Button key={filter.id} type="button" size="sm" variant={faqFilter === filter.id ? 'default' : 'outline'} className="shrink-0 rounded-full border-black/15 bg-white text-xs" onClick={() => setFaqFilter(filter.id)}>{filter.label}</Button>)}
+            </div>
+          </fieldset>
           <div className="mt-7 rounded-[26px] border border-black/10 bg-white px-5 sm:px-7">
             {filteredFaq.length > 0 ? (
               <Accordion multiple>
@@ -621,14 +653,14 @@ export default function Home() {
 
       <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="grid gap-5 rounded-[30px] bg-primary p-6 text-black sm:grid-cols-[1fr_auto] sm:items-center sm:p-9">
-          <div><div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-[0.13em]"><Lightbulb className="size-5" /> Главное правило</div><h2 className="mt-3 max-w-3xl text-3xl font-extrabold leading-tight tracking-[-0.04em] sm:text-4xl">Если LMS или руководитель дали новое прямое указание — оно важнее этой памятки.</h2><p className="mt-3 max-w-3xl font-semibold">Памятка обезличена и помогает выбрать нужную ветку, но не меняет официальные требования.</p></div>
+          <div><div className="flex items-center gap-2 text-sm font-extrabold uppercase tracking-[0.13em]"><Lightbulb className="size-5" /> Главное правило</div><h2 className="mt-3 max-w-3xl text-3xl font-extrabold leading-tight tracking-[-0.04em] sm:text-4xl">Если LMS или руководитель дали новое прямое указание — оно важнее этой памятки.</h2><p className="mt-3 max-w-3xl font-semibold">Памятка обезличена и помогает выбрать нужный вид практики, но не меняет официальные требования.</p></div>
           <a href="#top" className="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-black px-5 text-sm font-bold text-white hover:bg-black/80">Наверх <Upload className="size-4" /></a>
         </div>
       </section>
 
       <footer className="border-t border-black/10 bg-white">
         <div className="mx-auto flex max-w-7xl flex-col gap-4 px-5 py-7 text-sm text-black/55 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-          <p className="font-semibold">Памятка для высшего образования · без персональных данных</p>
+          <p className="font-semibold">Памятка для высшего образования</p>
           <p>Проверяйте актуальную версию задания в LMS.</p>
         </div>
       </footer>
