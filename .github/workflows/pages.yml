@@ -41,6 +41,7 @@ jobs:
           from pathlib import Path
 
           root = Path('dist/client')
+          base = '/-practice-faq-vo'
           for path in root.rglob('*'):
               if not path.is_file():
                   continue
@@ -48,11 +49,11 @@ jobs:
                   text = path.read_text(encoding='utf-8')
               except UnicodeDecodeError:
                   continue
-              updated = text.replace('/_next/', '/practice-faq/_next/')
-              updated = updated.replace('/synergy-mark.png', '/practice-faq/synergy-mark.png')
+              updated = text.replace('/_next/', f'{base}/_next/')
+              updated = updated.replace('/synergy-mark.png', f'{base}/synergy-mark.png')
               if updated != text:
                   path.write_text(updated, encoding='utf-8')
-          
+
           index = root / 'index.html'
           if not index.exists():
               raise SystemExit('Static export did not produce dist/client/index.html')

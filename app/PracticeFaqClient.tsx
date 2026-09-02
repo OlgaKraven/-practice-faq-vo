@@ -71,20 +71,20 @@ const commonDocuments: DocumentItem[] = [
     color: '#d8f04b',
   },
   {
-    id: 'attestation',
-    title: 'Аттестационный лист',
-    format: 'DOCX · Word',
-    action: 'Заполните только сведения об обучающемся и периоде практики. Оценку, критерии и заключение оставьте руководителю.',
-    check: 'Заполнена информация о студенте, а поля руководителя не заполнены вместо него.',
-    color: '#ffb24a',
-  },
-  {
     id: 'report',
     title: 'Отчёт о прохождении практики',
     format: 'PDF',
     action: 'Раскройте кейсы из индивидуального задания, добавьте титульный лист и экспортируйте итоговый документ в PDF.',
     check: 'Все кейсы получили содержательные ответы; в PDF нет пустых полей, примеров и обрезанного текста.',
     color: '#72c7ff',
+  },
+  {
+    id: 'attestation',
+    title: 'Аттестационный лист',
+    format: 'DOCX · Word',
+    action: 'Заполните только сведения об обучающемся и периоде практики. Оценку, критерии и заключение оставьте руководителю.',
+    check: 'Заполнена информация о студенте, а поля руководителя не заполнены вместо него.',
+    color: '#ffb24a',
   },
 ];
 
@@ -177,13 +177,13 @@ const timeline = [
   { date: 'До старта', title: 'Определиться', text: 'Выберите уровень, вид практики и место прохождения. Проверьте сроки договора, если нужна профильная организация.' },
   { date: 'В ходе практики', title: 'Собрать материал', text: 'Изучите задание, ведите рабочие заметки, сохраняйте источники и обсуждайте вопросы с руководителем.' },
   { date: 'Перед финишем', title: 'Оформить', text: 'Ответьте на кейсы, заполните шаблоны, проверьте ФИО, даты, подписи и формат каждого файла.' },
-  { date: 'После окончания', title: 'Загрузить', text: 'Прикрепите комплект в поле «Ответ» в LMS. Последний день загрузки — следующий день после окончания практики.' },
+  { date: 'После окончания', title: 'Загрузить', text: 'Прикрепите комплект в поле «Ответ» в LMS.', highlight: 'Следующий день после окончания практики — последний день загрузки.' },
 ] as const;
 
 const standardReportStages = [
   { level: '01', title: 'Разобрать задание', items: ['цель и ожидаемый результат', 'объект или место практики', 'исходные данные и ограничения', 'критерии готовности'], color: '#d8f04b' },
   { level: '02', title: 'Показать работу', items: ['каждый пункт индивидуального задания', 'последовательность действий', 'полученный результат', 'связь результата с целью'], color: '#72c7ff' },
-  { level: '03', title: 'Приложить доказательства', items: ['скриншоты и схемы', 'таблицы, расчёты или примеры', 'ссылки на использованные материалы', 'подписи к иллюстрациям'], color: '#ffb24a' },
+  { level: '03', title: 'Приложить данные', items: ['скриншоты и схемы', 'таблицы, расчёты или примеры', 'ссылки на использованные материалы', 'подписи к иллюстрациям'], color: '#ffb24a' },
   { level: '04', title: 'Сделать выводы', items: ['что выполнено', 'что показал анализ', '3–5 собственных выводов', 'рекомендации или следующий шаг'], color: '#c8a7ff' },
 ] as const;
 
@@ -200,7 +200,7 @@ const finalChecks = [
   'PDF и DOCX открываются после скачивания или экспорта.',
   'Подписи видны, а печати стоят там, где их использует организация.',
   'В аттестационном листе студентом заполнена только своя часть.',
-  'В LMS прикреплены все файлы выбранного варианта, а не несколько версий одного файла.',
+  'После прикрепления откройте поле «Ответ» ещё раз: все файлы отображаются, загрузка завершена и технических ошибок нет.',
 ] as const;
 
 const scoring = [
@@ -235,6 +235,11 @@ const faq = [
     answer: 'Проверьте сообщение на студенческой почте: там указано место прохождения или дальнейшие инструкции. Если письма нет во входящих, обязательно посмотрите папку «Спам» и поиск по почте.',
   },
   {
+    category: 'Консультация',
+    question: 'Где найти консультацию по практике?',
+    answer: 'В LMS откройте раздел «Вебинары» и найдите консультацию по практике. Дату, время и ссылку также проверьте в описании практики.',
+  },
+  {
     category: 'Руководитель практики',
     question: 'Как узнать, кто руководитель практики?',
     answer: 'Откройте практику в LMS и посмотрите раздел «Преподавательский состав». Там указан руководитель практики и доступные контакты.',
@@ -248,6 +253,11 @@ const faq = [
     category: 'Сдача',
     question: 'Куда загружать документы?',
     answer: 'Электронные файлы прикрепляются в личном кабинете LMS в поле «Ответ». Если для договора или оригиналов указан отдельный канал, используйте его и не подменяйте оригинал сканом.',
+  },
+  {
+    category: 'Сдача',
+    question: 'Как проверить загрузку комплекта в LMS?',
+    answer: 'После прикрепления заново откройте поле «Ответ» и проверьте, что отображаются все файлы выбранного комплекта, загрузка завершена и нет сообщения об ошибке. При техническом сбое прикрепите отсутствующий файл ещё раз и сообщите руководителю практики или в поддержку LMS.',
   },
   {
     category: 'Форматы',
@@ -292,7 +302,7 @@ const faq = [
   {
     category: 'Отчёт',
     question: 'Что должно быть в отчёте?',
-    answer: 'Отчёт должен отвечать на практические кейсы из индивидуального задания. Покажите ход работы, фактические результаты, доказательства и выводы. Не заменяйте содержательные ответы пересказом теории или одним набором скриншотов.',
+    answer: 'Отчёт должен отвечать на практические кейсы из индивидуального задания. Покажите ход работы, фактические результаты, данные и выводы. Не заменяйте содержательные ответы пересказом теории или одним набором скриншотов.',
   },
   {
     category: 'НИР',
@@ -353,6 +363,7 @@ export default function Home() {
   const [masterPracticeType, setMasterPracticeType] = useState<MasterPracticeType | null>(null);
   const [placement, setPlacement] = useState<Placement | null>(null);
   const [completedByRoute, setCompletedByRoute] = useState<Record<string, Record<string, boolean>>>({});
+  const [uploadVerifiedByRoute, setUploadVerifiedByRoute] = useState<Record<string, boolean>>({});
   const [query, setQuery] = useState('');
   const [faqFilter, setFaqFilter] = useState<FaqFilter>('all');
   const [hydrated, setHydrated] = useState(false);
@@ -366,6 +377,7 @@ export default function Home() {
           trackId?: TrackId | null;
           placement?: Placement | null;
           completedByRoute?: Record<string, Record<string, boolean>>;
+          uploadVerifiedByRoute?: Record<string, boolean>;
         };
         if (parsed.educationLevel === 'bachelor' || parsed.educationLevel === 'master') setEducationLevel(parsed.educationLevel);
         const restoredTrack = tracks.find((track) => track.id === parsed.trackId);
@@ -378,6 +390,7 @@ export default function Home() {
         }
         if (parsed.placement === 'university' || parsed.placement === 'organization') setPlacement(parsed.placement);
         if (parsed.completedByRoute && typeof parsed.completedByRoute === 'object') setCompletedByRoute(parsed.completedByRoute);
+        if (parsed.uploadVerifiedByRoute && typeof parsed.uploadVerifiedByRoute === 'object') setUploadVerifiedByRoute(parsed.uploadVerifiedByRoute);
       }
     } catch {
       // The checklist still works for this visit when storage is unavailable.
@@ -390,18 +403,19 @@ export default function Home() {
     try {
       window.localStorage.setItem(
         'higher-education-practice-faq',
-        JSON.stringify({ educationLevel, trackId, placement, completedByRoute }),
+        JSON.stringify({ educationLevel, trackId, placement, completedByRoute, uploadVerifiedByRoute }),
       );
     } catch {
       // Local persistence is a convenience, not a requirement.
     }
-  }, [completedByRoute, educationLevel, hydrated, placement, trackId]);
+  }, [completedByRoute, educationLevel, hydrated, placement, trackId, uploadVerifiedByRoute]);
 
   const selectedTrack = tracks.find((track) => track.id === trackId) ?? null;
   const levelTracks = tracks.filter((track) => track.level === educationLevel);
   const activeDocuments = useMemo(() => getDocuments(selectedTrack, placement), [placement, selectedTrack]);
   const routeKey = getRouteKey(trackId, placement);
   const completed = completedByRoute[routeKey] ?? {};
+  const uploadVerified = Boolean(uploadVerifiedByRoute[routeKey]);
   const completedCount = activeDocuments.filter((document) => completed[document.id]).length;
   const progress = activeDocuments.length > 0 ? Math.round((completedCount / activeDocuments.length) * 100) : 0;
 
@@ -478,6 +492,12 @@ export default function Home() {
 
   function resetChecklist() {
     setCompletedByRoute((current) => ({ ...current, [routeKey]: {} }));
+    setUploadVerifiedByRoute((current) => ({ ...current, [routeKey]: false }));
+  }
+
+  function toggleUploadVerification(checked: boolean) {
+    if (!trackId) return;
+    setUploadVerifiedByRoute((current) => ({ ...current, [routeKey]: checked }));
   }
 
   const placeLabel = placement === 'organization' ? 'профильная организация' : placement === 'university' ? 'университет' : 'место ещё не выбрано';
@@ -487,7 +507,7 @@ export default function Home() {
       <header className="sticky top-0 z-50 border-b border-black/10 bg-white/95 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-3.5 sm:px-8">
           <a href="#top" className="flex min-w-0 items-center gap-3 font-extrabold tracking-[-0.04em]">
-            <img src="/practice-logo.png" alt="Логотип" className="size-8 shrink-0 rounded-[3px] object-cover" />
+            <img src="practice-logo.png" alt="Логотип" className="size-8 shrink-0 rounded-[3px] object-cover" />
             <span className="hidden truncate sm:inline">ПРАКТИКА · ВО</span>
           </a>
           <nav className="ml-auto flex max-w-[60%] items-center gap-4 overflow-x-auto whitespace-nowrap text-xs font-bold sm:ml-0 sm:max-w-none sm:gap-5 sm:text-sm" aria-label="Основная навигация">
@@ -518,7 +538,7 @@ export default function Home() {
             <div className="rounded-2xl bg-white p-4 text-black shadow-sm">
               <CalendarDays className="mb-5 size-6 text-primary" />
               <p className="text-sm font-semibold text-black/60">Срок</p>
-              <p className="mt-1 text-xl font-extrabold">Срок сдачи — последний день практики</p>
+              <p className="mt-1 text-xl font-extrabold text-primary">Следующий день после окончания практики</p>
             </div>
           </div>
         </div>
@@ -602,6 +622,17 @@ export default function Home() {
 
       <section id="documents" className="scroll-mt-24 bg-black py-12 text-white sm:py-16">
         <div className="mx-auto max-w-7xl px-5 sm:px-8">
+          <div className="mb-8 rounded-[28px] border border-[#72c7ff]/45 bg-[#72c7ff]/12 p-5 sm:p-6">
+            <div className="flex gap-4">
+              <CalendarDays className="mt-0.5 size-7 shrink-0 text-[#72c7ff]" />
+              <div>
+                <Badge className="bg-[#72c7ff] text-black">Перед началом практики</Badge>
+                <h2 className="mt-4 text-2xl font-extrabold tracking-[-0.03em]">Посетите консультацию по практике</h2>
+                <p className="mt-2 max-w-4xl text-sm leading-relaxed text-white/70">До начала практики посетите консультацию с преподавателем. Дату, время и ссылку ищите в LMS в разделе «Вебинары», а подробности и дополнительные указания — в описании практики.</p>
+              </div>
+            </div>
+          </div>
+
           <div className="grid gap-8 lg:grid-cols-[.72fr_1.28fr]">
             <div className="lg:sticky lg:top-24 lg:self-start">
               <Badge className="bg-primary text-white">Чек-лист комплекта</Badge>
@@ -623,7 +654,7 @@ export default function Home() {
                 <output className="mt-6 block rounded-2xl bg-[#d8f04b] p-5 text-black">
                   <PartyPopper className="mb-3 size-7" />
                   <p className="text-xl font-extrabold">Комплект собран</p>
-                  <p className="mt-1 text-sm font-semibold">Откройте финальную проверку и только потом отправляйте файлы.</p>
+                  <p className="mt-1 text-sm font-semibold">Откройте финальную проверку, прикрепите файлы и подтвердите проверку загрузки ниже.</p>
                 </output>
               )}
             </div>
@@ -646,8 +677,22 @@ export default function Home() {
                   </label>
                 );
               }) : (
-                <div className="rounded-[24px] border border-dashed border-white/20 bg-[#191919] p-8 text-white/65"><FileText className="size-8 text-primary" /><p className="mt-4 text-lg font-extrabold text-white">Документы появятся после выбора вида практики</p><p className="mt-2 text-sm leading-relaxed">Выберите уровень образования и один из двух видов практики выше.</p></div>
+                <div className="rounded-[24px] border border-dashed border-white/20 bg-[#191919] p-8 text-white/65"><FileText className="size-8 text-primary" /><p className="mt-4 text-lg font-extrabold text-white">Документы появятся после выбора практики</p><p className="mt-2 text-sm leading-relaxed">Выберите уровень образования и вариант практики выше.</p></div>
               )}
+
+              {selectedTrack && <div className={`mt-3 rounded-[24px] border p-5 text-black ${uploadVerified ? 'border-[#d8f04b] bg-[#d8f04b]' : 'border-[#ffb24a] bg-[#ffb24a]'}`}>
+                <div className="flex gap-4">
+                  <ShieldCheck className="mt-0.5 size-6 shrink-0" />
+                  <div className="min-w-0">
+                    <h3 className="font-extrabold">Проверьте комплект после загрузки в LMS</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-black/70">После прикрепления снова откройте поле «Ответ»: убедитесь, что видны все файлы выбранного комплекта, загрузка завершена и технических ошибок нет.</p>
+                    <label htmlFor="lms-upload-verified" className="mt-4 flex cursor-pointer items-start gap-3 text-sm font-bold">
+                      <Checkbox id="lms-upload-verified" checked={uploadVerified} onCheckedChange={(checked) => toggleUploadVerification(checked === true)} className="mt-0.5 size-6 shrink-0 border-black/45 data-checked:border-black data-checked:bg-black data-checked:text-white" aria-label="Подтвердить проверку комплекта в LMS" />
+                      <span>Я проверил(а) комплект в LMS и убедился(лась), что все файлы загрузились.</span>
+                    </label>
+                  </div>
+                </div>
+              </div>}
 
               {selectedTrack?.kind === 'production' && <div className="mt-3 rounded-[24px] border border-primary/50 bg-primary/12 p-5">
                 <div className="flex gap-4">
@@ -672,14 +717,14 @@ export default function Home() {
       <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8 sm:py-16">
         <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
           <div><Badge variant="outline" className="border-black/15 bg-white text-black">Маршрут</Badge><h2 className="mt-4 text-4xl font-extrabold tracking-[-0.05em] sm:text-5xl">Что делать и когда</h2></div>
-          <p className="max-w-md text-sm leading-relaxed text-black/55">Сначала проверьте вид и место практики, затем собирайте доказательства и оформляйте файлы.</p>
+          <p className="max-w-md text-sm leading-relaxed text-black/55">Сначала проверьте вид и место практики, затем собирайте данные и оформляйте файлы.</p>
         </div>
         <div className="mt-8 grid overflow-hidden rounded-[28px] border border-black/10 bg-white md:grid-cols-4">
           {timeline.map((item, index) => (
             <article key={item.date} className="relative border-black/10 p-6 not-last:border-b md:not-last:border-b-0 md:not-last:border-r">
               <div className="flex items-center justify-between gap-4"><span className="text-2xl font-black text-primary">{item.date}</span><span className="text-xs font-bold text-black/35">0{index + 1}</span></div>
               <h3 className="mt-8 text-xl font-extrabold">{item.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-black/60">{item.text}</p>
+              <p className="mt-3 text-sm leading-relaxed text-black/60">{item.text}{'highlight' in item && <><br /><strong className="mt-2 inline-block rounded-lg bg-primary px-2.5 py-1 font-extrabold text-black">{item.highlight}</strong></>}</p>
             </article>
           ))}
         </div>
