@@ -37,7 +37,7 @@ import { Input } from '@/components/ui/input';
 type EducationLevel = 'bachelor' | 'master';
 type PracticeKind = 'study' | 'production';
 type Placement = 'university' | 'organization';
-type TrackId = 'bachelor-study' | 'bachelor-production' | 'master-study-research' | 'master-production-research';
+type TrackId = 'bachelor-study' | 'bachelor-production' | 'master-study' | 'master-production' | 'master-study-research' | 'master-production-research';
 type FaqFilter = 'all' | 'bachelor' | 'master' | 'study' | 'production' | 'research';
 
 type DocumentItem = {
@@ -137,6 +137,25 @@ const tracks: Track[] = [
     hasCertificate: true,
   },
   {
+    id: 'master-study',
+    level: 'master',
+    kind: 'study',
+    title: 'Учебная практика',
+    eyebrow: 'Ознакомительная · без НИР',
+    description: 'Учебная практика в магистратуре без научно-исследовательской работы: знакомство с задачами и профессиональной средой.',
+    note: 'Комплект документов — как в бакалавриате: 3 файла.',
+  },
+  {
+    id: 'master-production',
+    level: 'master',
+    kind: 'production',
+    title: 'Производственная практика',
+    eyebrow: 'По профилю · без НИР',
+    description: 'Практические задачи по профилю подготовки в магистратуре без научно-исследовательской работы.',
+    note: 'Комплект документов — как в бакалавриате: 4 файла; договор зависит от места практики.',
+    hasCertificate: true,
+  },
+  {
     id: 'master-study-research',
     level: 'master',
     kind: 'study',
@@ -210,7 +229,7 @@ const faq = [
   {
     category: 'Разделение',
     question: 'Как устроено деление практик?',
-    answer: 'Сначала выберите уровень образования: бакалавриат или магистратура. В бакалавриате доступны учебная ознакомительная и производственная практика по профилю. В магистратуре — учебная НИР и производственная НИР. После выбора система показывает только документы выбранного варианта.',
+    answer: 'Сначала выберите уровень образования: бакалавриат или магистратура. На обоих уровнях могут быть обычные учебная и производственная практики. В магистратуре дополнительно встречаются учебная НИР и производственная НИР. После выбора система показывает только документы выбранного варианта.',
   },
   {
     category: 'Сроки',
@@ -453,7 +472,7 @@ export default function Home() {
             <div className="rounded-2xl border border-black/15 bg-white/22 p-4">
               <GraduationCap className="mb-5 size-6" />
               <p className="text-sm font-semibold">Начало</p>
-              <p className="mt-1 text-xl font-extrabold">Уровень и вид</p>
+              <p className="mt-1 text-xl font-extrabold">Понять, какая практика</p>
             </div>
             <div className="rounded-2xl bg-white p-4 text-black shadow-sm">
               <CalendarDays className="mb-5 size-6 text-primary" />
@@ -478,7 +497,7 @@ export default function Home() {
             </Button>
             <Button aria-pressed={educationLevel === 'master'} variant={educationLevel === 'master' ? 'default' : 'outline'} className="h-auto min-h-20 items-center justify-start gap-4 whitespace-normal rounded-2xl px-4 py-4 text-left" onClick={() => selectEducationLevel('master')}>
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-black/6"><BookOpenCheck className="size-5" /></span>
-              <span className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><strong className="block text-base">Магистратура</strong><span className="mt-1 block text-sm font-normal opacity-70">учебная НИР или производственная НИР</span></span>
+              <span className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><strong className="block text-base">Магистратура</strong><span className="mt-1 block text-sm font-normal opacity-70">учебная, производственная или НИР</span></span>
             </Button>
           </div>
 
