@@ -36,6 +36,7 @@ import { Input } from '@/components/ui/input';
 
 type EducationLevel = 'bachelor' | 'master';
 type PracticeKind = 'study' | 'production';
+type MasterPracticeType = 'standard' | 'research';
 type Placement = 'university' | 'organization';
 type TrackId = 'bachelor-study' | 'bachelor-production' | 'master-study' | 'master-production' | 'master-study-research' | 'master-production-research';
 type FaqFilter = 'all' | 'bachelor' | 'master' | 'study' | 'production' | 'research';
@@ -222,7 +223,7 @@ const faq = [
   {
     category: 'Разделение',
     question: 'Как устроено деление практик?',
-    answer: 'Сначала выберите уровень образования: бакалавриат или магистратура. На обоих уровнях могут быть обычные учебная и производственная практики. В магистратуре дополнительно встречаются учебная НИР и производственная НИР. После выбора система показывает только документы выбранного варианта.',
+    answer: 'Сначала выберите уровень образования: бакалавриат или магистратура. На обоих уровнях могут быть обычные учебная и производственная практики. Для магистратуры сначала выберите вид практики — учебная или производственная, затем тип — обычная или НИР. После выбора система показывает только документы выбранного варианта.',
   },
   {
     category: 'Сроки',
@@ -344,6 +345,8 @@ function getRouteKey(trackId: TrackId | null, placement: Placement | null) {
 export default function Home() {
   const [educationLevel, setEducationLevel] = useState<EducationLevel | null>(null);
   const [trackId, setTrackId] = useState<TrackId | null>(null);
+  const [masterPracticeKind, setMasterPracticeKind] = useState<PracticeKind | null>(null);
+  const [masterPracticeType, setMasterPracticeType] = useState<MasterPracticeType | null>(null);
   const [placement, setPlacement] = useState<Placement | null>(null);
   const [completedByRoute, setCompletedByRoute] = useState<Record<string, Record<string, boolean>>>({});
   const [query, setQuery] = useState('');
@@ -361,7 +364,14 @@ export default function Home() {
           completedByRoute?: Record<string, Record<string, boolean>>;
         };
         if (parsed.educationLevel === 'bachelor' || parsed.educationLevel === 'master') setEducationLevel(parsed.educationLevel);
-        if (tracks.some((track) => track.id === parsed.trackId)) setTrackId(parsed.trackId ?? null);
+        const restoredTrack = tracks.find((track) => track.id === parsed.trackId);
+        if (restoredTrack) {
+          setTrackId(restoredTrack.id);
+          if (restoredTrack.level === 'master') {
+            setMasterPracticeKind(restoredTrack.kind);
+            setMasterPracticeType(restoredTrack.isResearch ? 'research' : 'standard');
+          }
+        }
         if (parsed.placement === 'university' || parsed.placement === 'organization') setPlacement(parsed.placement);
         if (parsed.completedByRoute && typeof parsed.completedByRoute === 'object') setCompletedByRoute(parsed.completedByRoute);
       }
@@ -408,6 +418,8 @@ export default function Home() {
   function selectEducationLevel(level: EducationLevel) {
     setEducationLevel(level);
     setTrackId(null);
+    setMasterPracticeKind(null);
+    setMasterPracticeType(null);
     setPlacement(null);
     setQuery('');
     setFaqFilter('all');
@@ -415,9 +427,41 @@ export default function Home() {
 
   function selectTrack(id: TrackId) {
     setTrackId(id);
+    setMasterPracticeKind(null);
+    setMasterPracticeType(null);
     setPlacement(null);
     setQuery('');
     setFaqFilter('all');
+  }
+
+  function selectMasterKind(kind: PracticeKind) {
+    setMasterPracticeKind(kind);
+    setPlacement(null);
+    setQuery('');
+    setFaqFilter('all');
+
+    if (!masterPracticeType) {
+      setTrackId(null);
+      return;
+    }
+
+    const nextTrack = tracks.find((track) => track.level === 'master' && track.kind === kind && Boolean(track.isResearch) === (masterPracticeType === 'research'));
+    setTrackId(nextTrack?.id ?? null);
+  }
+
+  function selectMasterType(type: MasterPracticeType) {
+    setMasterPracticeType(type);
+    setPlacement(null);
+    setQuery('');
+    setFaqFilter('all');
+
+    if (!masterPracticeKind) {
+      setTrackId(null);
+      return;
+    }
+
+    const nextTrack = tracks.find((track) => track.level === 'master' && track.kind === masterPracticeKind && Boolean(track.isResearch) === (type === 'research'));
+    setTrackId(nextTrack?.id ?? null);
   }
 
   function toggleDocument(id: string, checked: boolean) {
@@ -460,7 +504,7 @@ export default function Home() {
           <Badge className="relative mb-8 bg-black text-white">Навигатор по документам</Badge>
           <p className="relative mb-3 text-sm font-extrabold uppercase tracking-[0.16em]">Учебная и производственная практика</p>
           <h1 className="relative max-w-3xl text-5xl font-extrabold leading-[0.9] tracking-[-0.06em] sm:text-7xl">Навигатор по практике</h1>
-          <p className="relative mt-5 max-w-2xl text-lg font-medium leading-snug sm:text-xl">Сначала выберите уровень образования, затем вид практики. Памятка покажет состав файлов, формат и следующий шаг.</p>
+          <p className="relative mt-5 max-w-2xl text-lg font-medium leading-snug sm:text-xl">Сначала выберите уровень образования, затем вид и тип практики. Памятка покажет состав файлов, формат и следующий шаг.</p>
           <div className="relative mt-9 grid gap-3 sm:grid-cols-2">
             <div className="rounded-2xl border border-black/15 bg-white/22 p-4">
               <GraduationCap className="mb-5 size-6" />
@@ -477,7 +521,7 @@ export default function Home() {
 
         <div className="rounded-[30px] border border-black/10 bg-white p-6 sm:p-8">
           <div className="flex items-center justify-between gap-4">
-            <p className="text-sm font-extrabold uppercase tracking-[0.14em] text-black/50">Шаг 1 из 2</p>
+            <p className="text-sm font-extrabold uppercase tracking-[0.14em] text-black/50">{educationLevel === 'master' ? 'Шаг 1 из 3' : 'Шаг 1 из 2'}</p>
             <Badge variant="secondary" className="bg-[#e0e1e5] text-black">30 секунд</Badge>
           </div>
           <h2 className="mt-3 text-3xl font-extrabold tracking-[-0.045em] sm:text-4xl">Какой у вас уровень?</h2>
@@ -490,14 +534,41 @@ export default function Home() {
             </Button>
             <Button aria-pressed={educationLevel === 'master'} variant={educationLevel === 'master' ? 'default' : 'outline'} className="h-auto min-h-20 items-center justify-start gap-4 whitespace-normal rounded-2xl px-4 py-4 text-left" onClick={() => selectEducationLevel('master')}>
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-black/6"><BookOpenCheck className="size-5" /></span>
-              <span className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><strong className="block text-base">Магистратура</strong><span className="mt-1 block text-sm font-normal opacity-70">учебная, производственная или НИР</span></span>
+              <span className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><strong className="block text-base">Магистратура</strong><span className="mt-1 block text-sm font-normal opacity-70">вид и тип практики</span></span>
             </Button>
           </div>
 
           {educationLevel && <div className="mt-7 border-t border-black/10 pt-6">
-            <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-black/50">Шаг 2 из 2</p>
+            <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-black/50">{educationLevel === 'master' ? 'Шаг 2 из 3' : 'Шаг 2 из 2'}</p>
             <p className="mt-2 text-sm text-black/60">Вид практики</p>
-            <div className="mt-3 grid gap-2">
+            {educationLevel === 'master' ? <>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                {(['study', 'production'] as const).map((kind) => (
+                  <Button key={kind} aria-pressed={masterPracticeKind === kind} variant={masterPracticeKind === kind ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => selectMasterKind(kind)}>
+                    {kind === 'production' ? <Building2 className="size-4 shrink-0" /> : <ClipboardCheck className="size-4 shrink-0" />}
+                    <span className="flex min-w-0 flex-1 items-center leading-tight"><strong className="block text-sm">{kind === 'production' ? 'Производственная практика' : 'Учебная практика'}</strong></span>
+                    <ChevronRight className="ml-auto size-4 shrink-0 opacity-45" />
+                  </Button>
+                ))}
+              </div>
+
+              <div className="mt-6 border-t border-black/10 pt-6">
+                <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-black/50">Шаг 3 из 3</p>
+                <p className="mt-2 text-sm text-black/60">Тип практики</p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  <Button disabled={!masterPracticeKind} aria-pressed={masterPracticeType === 'standard'} variant={masterPracticeType === 'standard' ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => selectMasterType('standard')}>
+                    <FileText className="size-4 shrink-0" />
+                    <span className="flex min-w-0 flex-1 items-center leading-tight"><strong className="block text-sm">Обычная практика</strong></span>
+                    <ChevronRight className="ml-auto size-4 shrink-0 opacity-45" />
+                  </Button>
+                  <Button disabled={!masterPracticeKind} aria-pressed={masterPracticeType === 'research'} variant={masterPracticeType === 'research' ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => selectMasterType('research')}>
+                    <Lightbulb className="size-4 shrink-0" />
+                    <span className="flex min-w-0 flex-1 items-center leading-tight"><strong className="block text-sm">НИР</strong></span>
+                    <ChevronRight className="ml-auto size-4 shrink-0 opacity-45" />
+                  </Button>
+                </div>
+              </div>
+            </> : <div className="mt-3 grid gap-2">
               {levelTracks.map((track) => (
                 <Button key={track.id} aria-pressed={trackId === track.id} variant={trackId === track.id ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => selectTrack(track.id)}>
                   {track.kind === 'production' ? <Building2 className="size-4 shrink-0" /> : <ClipboardCheck className="size-4 shrink-0" />}
@@ -505,7 +576,7 @@ export default function Home() {
                   <ChevronRight className="ml-auto size-4 shrink-0 opacity-45" />
                 </Button>
               ))}
-            </div>
+            </div>}
           </div>}
 
           {selectedTrack?.kind === 'production' && <div className="mt-7 border-t border-black/10 pt-6">
@@ -519,7 +590,7 @@ export default function Home() {
 
           <div className="mt-6 min-h-32 rounded-2xl bg-[#f0f1f3] p-5" aria-live="polite">
             {!educationLevel && <div className="flex gap-3 text-sm text-black/60"><ArrowDown className="mt-0.5 size-4 shrink-0 text-primary" /><p>Выберите бакалавриат или магистратуру — покажем соответствующие виды практики.</p></div>}
-            {educationLevel && !selectedTrack && <div className="flex gap-3 text-sm text-black/60"><ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" /><p>Теперь выберите вид практики. У НИР будет дополнительное приложение к комплекту.</p></div>}
+            {educationLevel && !selectedTrack && <div className="flex gap-3 text-sm text-black/60"><ArrowRight className="mt-0.5 size-4 shrink-0 text-primary" /><p>{educationLevel === 'master' ? 'Сначала выберите вид практики, затем её тип. Для НИР будет дополнительное приложение к комплекту.' : 'Теперь выберите вид практики. У НИР будет дополнительное приложение к комплекту.'}</p></div>}
             {selectedTrack && <div>
               <p className="flex items-center gap-2 font-extrabold"><CheckCircle2 className="size-5 text-[#008f87]" /> {selectedTrack.title} выбрана.</p>
               <p className="mt-2 text-sm leading-relaxed text-black/60">{selectedTrack.note} {selectedTrack.kind === 'production' && !placement ? 'Выберите место практики, чтобы увидеть полный комплект.' : ''}</p>
