@@ -177,7 +177,7 @@ const timeline = [
   { date: 'До старта', title: 'Определиться', text: 'Выберите уровень, вид практики и место прохождения. Проверьте сроки договора, если нужна профильная организация.' },
   { date: 'В ходе практики', title: 'Собрать материал', text: 'Изучите задание, ведите рабочие заметки, сохраняйте источники и обсуждайте вопросы с руководителем.' },
   { date: 'Перед финишем', title: 'Оформить', text: 'Ответьте на кейсы, заполните шаблоны, проверьте ФИО, даты, подписи и формат каждого файла.' },
-  { date: 'После окончания', title: 'Загрузить', text: 'Прикрепите комплект в поле «Ответ» в LMS.', highlight: 'Следующий день после окончания практики — последний день загрузки.' },
+  { date: 'После окончания', title: 'Загрузить', text: 'Прикрепите комплект в поле «Ответ» в LMS.', highlight: 'Последний день практики и следующий день после окончания практики — срок сдачи.' },
 ] as const;
 
 const standardReportStages = [
@@ -227,7 +227,7 @@ const faq = [
   {
     category: 'Сроки',
     question: 'Когда загружать комплект?',
-    answer: 'Комплект нужно загрузить не позднее следующего дня после окончания практики. Точную дату и время проверьте в задании LMS; срок практики также можно уточнить в описании практики в LMS и в сообщении на студенческой почте.',
+    answer: 'Срок сдачи — последний день практики и следующий день после окончания практики. Загрузите комплект не позднее следующего дня после окончания практики. Точную дату и время проверьте в задании LMS; срок практики также можно уточнить в описании практики в LMS и в сообщении на студенческой почте.',
   },
   {
     category: 'Место практики',
@@ -262,7 +262,7 @@ const faq = [
   {
     category: 'Форматы',
     question: 'В каких форматах сдавать файлы?',
-    answer: 'Индивидуальное задание и отчёт — PDF. Аттестационный лист — DOCX (Word). Справка — PDF. Дополнительное приложение к учебной или производственной НИР — PDF. Договор загружается как PDF, если LMS просит его скан.',
+    answer: 'В базовом порядке: 1) индивидуальное задание — PDF; 2) отчёт о прохождении практики — PDF; 3) аттестационный лист — DOCX (Word). Затем, если они нужны для выбранного варианта, добавляются справка — PDF, договор — PDF и дополнительное приложение к учебной или производственной НИР — PDF.',
   },
   {
     category: 'Договор',
@@ -538,7 +538,7 @@ export default function Home() {
             <div className="rounded-2xl bg-white p-4 text-black shadow-sm">
               <CalendarDays className="mb-5 size-6 text-primary" />
               <p className="text-sm font-semibold text-black/60">Срок</p>
-              <p className="mt-1 text-xl font-extrabold text-primary">Следующий день после окончания практики</p>
+              <p className="mt-1 text-lg font-extrabold leading-tight text-primary sm:text-xl">Последний день практики и следующий день после окончания практики</p>
             </div>
           </div>
         </div>
@@ -660,6 +660,11 @@ export default function Home() {
             </div>
 
             <div className="grid gap-3">
+              {selectedTrack && <div className="rounded-[20px] border border-white/15 bg-white/8 px-5 py-4 text-sm">
+                <p className="font-extrabold uppercase tracking-[0.12em] text-white/55">Порядок файлов</p>
+                <p className="mt-2 font-bold leading-relaxed">01 Индивидуальное задание <span className="mx-1 text-primary" aria-hidden="true">→</span> 02 Отчёт о прохождении практики <span className="mx-1 text-primary" aria-hidden="true">→</span> 03 Аттестационный лист</p>
+                <p className="mt-1 text-xs leading-relaxed text-white/55">После этих трёх документов отображаются только дополнительные файлы выбранного варианта.</p>
+              </div>}
               {activeDocuments.length > 0 ? activeDocuments.map((document) => {
                 const isDone = Boolean(completed[document.id]);
                 return (
