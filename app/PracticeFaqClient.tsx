@@ -472,13 +472,13 @@ export default function Home() {
           <p className="mt-3 leading-relaxed text-black/60">Это главное разделение: названия и дополнительные материалы зависят от уровня образования.</p>
 
           <div className="mt-7 grid gap-3 sm:grid-cols-2">
-            <Button aria-pressed={educationLevel === 'bachelor'} variant={educationLevel === 'bachelor' ? 'default' : 'outline'} className="h-auto justify-start gap-4 rounded-2xl px-4 py-4 text-left" onClick={() => selectEducationLevel('bachelor')}>
+            <Button aria-pressed={educationLevel === 'bachelor'} variant={educationLevel === 'bachelor' ? 'default' : 'outline'} className="h-auto min-h-20 items-center justify-start gap-4 whitespace-normal rounded-2xl px-4 py-4 text-left" onClick={() => selectEducationLevel('bachelor')}>
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-black/6"><GraduationCap className="size-5" /></span>
-              <span><strong className="block text-base">Бакалавриат</strong><span className="mt-0.5 block text-sm font-normal opacity-70">учебная или производственная</span></span>
+              <span className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><strong className="block text-base">Бакалавриат</strong><span className="mt-1 block text-sm font-normal opacity-70">учебная или производственная</span></span>
             </Button>
-            <Button aria-pressed={educationLevel === 'master'} variant={educationLevel === 'master' ? 'default' : 'outline'} className="h-auto justify-start gap-4 rounded-2xl px-4 py-4 text-left" onClick={() => selectEducationLevel('master')}>
+            <Button aria-pressed={educationLevel === 'master'} variant={educationLevel === 'master' ? 'default' : 'outline'} className="h-auto min-h-20 items-center justify-start gap-4 whitespace-normal rounded-2xl px-4 py-4 text-left" onClick={() => selectEducationLevel('master')}>
               <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-black/6"><BookOpenCheck className="size-5" /></span>
-              <span><strong className="block text-base">Магистратура</strong><span className="mt-0.5 block text-sm font-normal opacity-70">учебная НИР или производственная НИР</span></span>
+              <span className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><strong className="block text-base">Магистратура</strong><span className="mt-1 block text-sm font-normal opacity-70">учебная НИР или производственная НИР</span></span>
             </Button>
           </div>
 
@@ -487,9 +487,9 @@ export default function Home() {
             <p className="mt-2 text-sm text-black/60">Выберите вид практики</p>
             <div className="mt-3 grid gap-2">
               {levelTracks.map((track) => (
-                <Button key={track.id} aria-pressed={trackId === track.id} variant={trackId === track.id ? 'secondary' : 'outline'} className="h-auto justify-start rounded-xl px-3 py-3 text-left" onClick={() => selectTrack(track.id)}>
+                <Button key={track.id} aria-pressed={trackId === track.id} variant={trackId === track.id ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => selectTrack(track.id)}>
                   {track.kind === 'production' ? <Building2 className="size-4 shrink-0" /> : <ClipboardCheck className="size-4 shrink-0" />}
-                  <span className="ml-2 min-w-0"><strong className="block text-sm">{track.title}</strong><span className="mt-0.5 block text-xs font-normal opacity-65">{track.eyebrow}</span></span>
+                  <span className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><strong className="block text-sm">{track.title}</strong><span className="mt-1 block text-xs font-normal opacity-65">{track.eyebrow}</span></span>
                   <ChevronRight className="ml-auto size-4 shrink-0 opacity-45" />
                 </Button>
               ))}
@@ -500,8 +500,8 @@ export default function Home() {
             <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-black/50">Дополнительный выбор</p>
             <p className="mt-2 text-sm text-black/60">Где проходит производственная практика?</p>
             <div className="mt-3 grid gap-2 sm:grid-cols-2">
-              <Button aria-pressed={placement === 'university'} variant={placement === 'university' ? 'secondary' : 'outline'} className="h-auto justify-start rounded-xl px-3 py-3 text-left" onClick={() => setPlacement('university')}><Landmark className="size-4" /><span className="ml-2"><strong className="block text-sm">В университете</strong><span className="block text-xs font-normal opacity-65">договор обычно не нужен</span></span></Button>
-              <Button aria-pressed={placement === 'organization'} variant={placement === 'organization' ? 'secondary' : 'outline'} className="h-auto justify-start rounded-xl px-3 py-3 text-left" onClick={() => setPlacement('organization')}><MapPin className="size-4" /><span className="ml-2"><strong className="block text-sm">В организации</strong><span className="block text-xs font-normal opacity-65">договор + справка</span></span></Button>
+              <Button aria-pressed={placement === 'university'} variant={placement === 'university' ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => setPlacement('university')}><Landmark className="size-4 shrink-0" /><span className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><strong className="block text-sm">В университете</strong><span className="mt-1 block text-xs font-normal opacity-65">договор обычно не нужен</span></span></Button>
+              <Button aria-pressed={placement === 'organization'} variant={placement === 'organization' ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => setPlacement('organization')}><MapPin className="size-4 shrink-0" /><span className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><strong className="block text-sm">В организации</strong><span className="mt-1 block text-xs font-normal opacity-65">договор + справка</span></span></Button>
             </div>
           </div>}
 
