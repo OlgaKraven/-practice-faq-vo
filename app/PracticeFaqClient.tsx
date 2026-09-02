@@ -101,7 +101,7 @@ const certificateDocument: DocumentItem = {
 const additionalDocument: DocumentItem = {
   id: 'additional',
   title: 'Дополнительные материалы · Приложение 1',
-  format: 'DOCX · Word',
+  format: 'PDF',
   action: 'Для НИР прикрепите приложение с перечнем тем или другими дополнительными материалами из комплекта практики.',
   check: 'Используется приложение именно к вашей теме НИР; в документе не осталось чужих примеров.',
   color: '#c8a7ff',
