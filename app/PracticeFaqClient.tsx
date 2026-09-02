@@ -54,7 +54,6 @@ type Track = {
   level: EducationLevel;
   kind: PracticeKind;
   title: string;
-  eyebrow: string;
   description: string;
   note: string;
   isResearch?: boolean;
@@ -122,7 +121,6 @@ const tracks: Track[] = [
     level: 'bachelor',
     kind: 'study',
     title: 'Учебная практика',
-    eyebrow: 'Ознакомительная',
     description: 'Знакомство с организацией, её ИТ-структурой и будущей профессиональной деятельностью.',
     note: 'Базовый комплект — 3 файла.',
   },
@@ -131,7 +129,6 @@ const tracks: Track[] = [
     level: 'bachelor',
     kind: 'production',
     title: 'Производственная практика',
-    eyebrow: 'По профилю профессиональной деятельности',
     description: 'Практические задачи по профилю подготовки, сбор материалов и аналитический отчёт.',
     note: 'Базовый комплект — 4 файла; договор зависит от места практики.',
     hasCertificate: true,
@@ -141,7 +138,6 @@ const tracks: Track[] = [
     level: 'master',
     kind: 'study',
     title: 'Учебная практика',
-    eyebrow: 'Ознакомительная · без НИР',
     description: 'Учебная практика в магистратуре без научно-исследовательской работы: знакомство с задачами и профессиональной средой.',
     note: 'Комплект документов — как в бакалавриате: 3 файла.',
   },
@@ -150,7 +146,6 @@ const tracks: Track[] = [
     level: 'master',
     kind: 'production',
     title: 'Производственная практика',
-    eyebrow: 'По профилю · без НИР',
     description: 'Практические задачи по профилю подготовки в магистратуре без научно-исследовательской работы.',
     note: 'Комплект документов — как в бакалавриате: 4 файла; договор зависит от места практики.',
     hasCertificate: true,
@@ -160,7 +155,6 @@ const tracks: Track[] = [
     level: 'master',
     kind: 'study',
     title: 'Учебная практика · НИР',
-    eyebrow: 'Научно-исследовательская работа',
     description: 'Выбор темы, постановка исследования, библиографический поиск и подготовка материалов для ВКР.',
     note: 'К базовым документам добавляется приложение к НИР.',
     isResearch: true,
@@ -171,7 +165,6 @@ const tracks: Track[] = [
     level: 'master',
     kind: 'production',
     title: 'Производственная практика · НИР',
-    eyebrow: 'Научно-исследовательская работа',
     description: 'Углублённая работа с научным материалом, кейсами, методологией и результатами исследования.',
     note: 'К базовым документам добавляется приложение к НИР; договор — по месту практики.',
     isResearch: true,
@@ -503,12 +496,12 @@ export default function Home() {
 
           {educationLevel && <div className="mt-7 border-t border-black/10 pt-6">
             <p className="text-sm font-extrabold uppercase tracking-[0.12em] text-black/50">Шаг 2 из 2</p>
-            <p className="mt-2 text-sm text-black/60">Выберите вид практики</p>
+            <p className="mt-2 text-sm text-black/60">Вид практики</p>
             <div className="mt-3 grid gap-2">
               {levelTracks.map((track) => (
                 <Button key={track.id} aria-pressed={trackId === track.id} variant={trackId === track.id ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => selectTrack(track.id)}>
                   {track.kind === 'production' ? <Building2 className="size-4 shrink-0" /> : <ClipboardCheck className="size-4 shrink-0" />}
-                  <span className="flex min-w-0 flex-1 flex-col justify-center leading-tight"><strong className="block text-sm">{track.title}</strong><span className="mt-1 block text-xs font-normal opacity-65">{track.eyebrow}</span></span>
+                  <span className="flex min-w-0 flex-1 items-center leading-tight"><strong className="block text-sm">{track.title}</strong></span>
                   <ChevronRight className="ml-auto size-4 shrink-0 opacity-45" />
                 </Button>
               ))}
