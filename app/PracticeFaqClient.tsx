@@ -11,7 +11,6 @@ import {
   CalendarDays,
   Check,
   CheckCircle2,
-  ChevronRight,
   CircleHelp,
   ClipboardCheck,
   FileCheck2,
@@ -178,7 +177,7 @@ const timeline = [
   { date: 'До старта', title: 'Определиться', text: 'Выберите уровень, вид практики и место прохождения. Проверьте сроки договора, если нужна профильная организация.' },
   { date: 'В ходе практики', title: 'Собрать материал', text: 'Изучите задание, ведите рабочие заметки, сохраняйте источники и обсуждайте вопросы с руководителем.' },
   { date: 'Перед финишем', title: 'Оформить', text: 'Ответьте на кейсы, заполните шаблоны, проверьте ФИО, даты, подписи и формат каждого файла.' },
-  { date: 'После окончания', title: 'Загрузить', text: 'Прикрепите комплект в поле «Ответ» в LMS не позднее срока, который указан в вашем задании.' },
+  { date: 'После окончания', title: 'Загрузить', text: 'Прикрепите комплект в поле «Ответ» в LMS. Последний день загрузки — следующий день после окончания практики.' },
 ] as const;
 
 const standardReportStages = [
@@ -228,12 +227,17 @@ const faq = [
   {
     category: 'Сроки',
     question: 'Когда загружать комплект?',
-    answer: 'Ориентируйтесь на дату и время в вашем задании LMS. Срок практики также можно уточнить в описании практики в LMS и в сообщении на студенческой почте.',
+    answer: 'Комплект нужно загрузить не позднее следующего дня после окончания практики. Точную дату и время проверьте в задании LMS; срок практики также можно уточнить в описании практики в LMS и в сообщении на студенческой почте.',
   },
   {
     category: 'Место практики',
     question: 'Как узнать, где я прохожу практику?',
     answer: 'Проверьте сообщение на студенческой почте: там указано место прохождения или дальнейшие инструкции. Если письма нет во входящих, обязательно посмотрите папку «Спам» и поиск по почте.',
+  },
+  {
+    category: 'Руководитель практики',
+    question: 'Как узнать, кто руководитель практики?',
+    answer: 'Откройте практику в LMS и посмотрите раздел «Преподавательский состав». Там указан руководитель практики и доступные контакты.',
   },
   {
     category: 'Сроки',
@@ -248,7 +252,7 @@ const faq = [
   {
     category: 'Форматы',
     question: 'В каких форматах сдавать файлы?',
-    answer: 'Индивидуальное задание и отчёт — PDF. Аттестационный лист — DOCX (Word). Справка — PDF. Для учебной и производственной НИР дополнительное приложение обычно хранится как DOCX, если в комплекте не указан другой формат. Договор загружается как PDF, если LMS просит его скан.',
+    answer: 'Индивидуальное задание и отчёт — PDF. Аттестационный лист — DOCX (Word). Справка — PDF. Дополнительное приложение к учебной или производственной НИР — PDF. Договор загружается как PDF, если LMS просит его скан.',
   },
   {
     category: 'Договор',
@@ -547,7 +551,6 @@ export default function Home() {
                   <Button key={kind} aria-pressed={masterPracticeKind === kind} variant={masterPracticeKind === kind ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => selectMasterKind(kind)}>
                     {kind === 'production' ? <Building2 className="size-4 shrink-0" /> : <ClipboardCheck className="size-4 shrink-0" />}
                     <span className="flex min-w-0 flex-1 items-center leading-tight"><strong className="block text-sm">{kind === 'production' ? 'Производственная практика' : 'Учебная практика'}</strong></span>
-                    <ChevronRight className="ml-auto size-4 shrink-0 opacity-45" />
                   </Button>
                 ))}
               </div>
@@ -559,12 +562,10 @@ export default function Home() {
                   <Button disabled={!masterPracticeKind} aria-pressed={masterPracticeType === 'standard'} variant={masterPracticeType === 'standard' ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => selectMasterType('standard')}>
                     <FileText className="size-4 shrink-0" />
                     <span className="flex min-w-0 flex-1 items-center leading-tight"><strong className="block text-sm">Обычная практика</strong></span>
-                    <ChevronRight className="ml-auto size-4 shrink-0 opacity-45" />
                   </Button>
                   <Button disabled={!masterPracticeKind} aria-pressed={masterPracticeType === 'research'} variant={masterPracticeType === 'research' ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => selectMasterType('research')}>
                     <Lightbulb className="size-4 shrink-0" />
                     <span className="flex min-w-0 flex-1 items-center leading-tight"><strong className="block text-sm">НИР</strong></span>
-                    <ChevronRight className="ml-auto size-4 shrink-0 opacity-45" />
                   </Button>
                 </div>
               </div>
@@ -573,7 +574,6 @@ export default function Home() {
                 <Button key={track.id} aria-pressed={trackId === track.id} variant={trackId === track.id ? 'secondary' : 'outline'} className="h-auto min-h-16 items-center justify-start gap-3 whitespace-normal rounded-xl px-3 py-3 text-left" onClick={() => selectTrack(track.id)}>
                   {track.kind === 'production' ? <Building2 className="size-4 shrink-0" /> : <ClipboardCheck className="size-4 shrink-0" />}
                   <span className="flex min-w-0 flex-1 items-center leading-tight"><strong className="block text-sm">{track.title}</strong></span>
-                  <ChevronRight className="ml-auto size-4 shrink-0 opacity-45" />
                 </Button>
               ))}
             </div>}
